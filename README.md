@@ -23,8 +23,8 @@ Every project reuses `Pbt205.Messaging`. Before writing code for Tasks 2 or 3, r
 3. Save your own RabbitMQ login as environment variables (PowerShell, then open a new terminal):
 
    ```powershell
-   setx PBT205_RABBITMQ_USER "Andrew"
-   setx PBT205_RABBITMQ_PASSWORD "your-password"
+   setx PBT205_RABBITMQ_USER "<your-rabbitmq-username>"
+   setx PBT205_RABBITMQ_PASSWORD "<your-password>"
    ```
 
    Usernames and passwords are case-sensitive. If these aren't set, the app asks for them when it starts.
@@ -34,13 +34,22 @@ Every project reuses `Pbt205.Messaging`. Before writing code for Tasks 2 or 3, r
 
 ```powershell
 dotnet build
-dotnet run --project src/Chat.Cli -- Andrew 100.74.122.113:5672
+dotnet run --project src/Chat.Cli -- <your-name> 100.74.122.113:5672
 ```
 
 Or run the built exe directly:
 
 ```powershell
-.\src\Chat.Cli\bin\Debug\net10.0\chat.exe Jane 100.74.122.113:5672 --room general
+.\src\Chat.Cli\bin\Debug\net10.0\chat.exe <your-name> 100.74.122.113:5672 --room general
+```
+
+The first argument is the name other people see in the room, so each person uses their own:
+
+```powershell
+dotnet run --project src/Chat.Cli -- Andrew 100.74.122.113:5672
+dotnet run --project src/Chat.Cli -- Jane   100.74.122.113:5672
+dotnet run --project src/Chat.Cli -- Jacobo 100.74.122.113:5672 --room general
+dotnet run --project src/Chat.Cli -- Angelo 100.74.122.113:5672 --room study
 ```
 
 ### Task 2: trading
@@ -48,10 +57,21 @@ Or run the built exe directly:
 Start one exchange, then send orders from as many windows as you like.
 
 ```powershell
+# One person runs the exchange and leaves it open
 dotnet run --project src\Exchange.Cli -- 100.74.122.113:5672
-dotnet run --project src\SendOrder.Cli -- Andrew 100.74.122.113:5672 SELL 100 10.00
-dotnet run --project src\SendOrder.Cli -- Jane 100.74.122.113:5672 BUY 100 10.25
 ```
+
+```powershell
+# Everyone else sends orders from their own machine, under their own name
+dotnet run --project src\SendOrder.Cli -- Andrew 100.74.122.113:5672 SELL 100 10.00
+dotnet run --project src\SendOrder.Cli -- Jane   100.74.122.113:5672 SELL 100 10.50
+dotnet run --project src\SendOrder.Cli -- Jacobo 100.74.122.113:5672 BUY  100 9.75
+dotnet run --project src\SendOrder.Cli -- Angelo 100.74.122.113:5672 BUY  250 10.25
+```
+
+With those four orders, Angelo's buy at 10.25 takes Andrew's cheaper sell at 10.00 and 150 of his
+shares rest in the book as the best buy. Jane's sell at 10.50 and Jacobo's buy at 9.75 stay in the
+book, because nobody will meet those prices yet.
 
 The exchange prints each order, any trades, and the state of the book. `sendOrder` sends one order
 and exits, as the brief requires. Add `--symbol ACME` to either app to use a different stock.
