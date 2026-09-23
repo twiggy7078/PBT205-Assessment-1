@@ -7,8 +7,8 @@ C# (.NET 10) prototypes that talk to each other through RabbitMQ.
 | `src/Pbt205.Messaging` | Shared RabbitMQ code used by every task: connecting, publishing and subscribing |
 | `src/Pbt205.Chat` | Chat room logic, shared by the console app and the future GUI |
 | `src/Chat.Cli` | **Task 1** command-line app (`chat.exe`) |
-| `src/Pbt205.Trading` | **Task 2** contracts and order book (skeleton) |
-| `src/SendOrder.Cli`, `src/Exchange.Cli` | **Task 2** command-line apps (skeletons) |
+| `src/Pbt205.Trading` | **Task 2** contracts and order book |
+| `src/SendOrder.Cli`, `src/Exchange.Cli` | **Task 2** command-line apps (`sendOrder.exe`, `exchange.exe`) |
 | `src/Pbt205.Tracing` | **Task 3** contracts and board (skeleton) |
 | `src/Person.Cli`, `src/Tracker.Cli`, `src/Query.Cli` | **Task 3** command-line apps (skeletons) |
 
@@ -41,6 +41,22 @@ Or run the built exe directly:
 ```powershell
 .\src\Chat.Cli\bin\Debug\net10.0\chat.exe Jane 100.74.122.113:5672 --room general
 ```
+
+### Task 2: trading
+
+Start one exchange, then send orders from as many windows as you like.
+
+```powershell
+dotnet run --project src\Exchange.Cli -- 100.74.122.113:5672
+dotnet run --project src\SendOrder.Cli -- Andrew 100.74.122.113:5672 SELL 100 10.00
+dotnet run --project src\SendOrder.Cli -- Jane 100.74.122.113:5672 BUY 100 10.25
+```
+
+The exchange prints each order, any trades, and the state of the book. `sendOrder` sends one order
+and exits, as the brief requires. Add `--symbol ACME` to either app to use a different stock.
+
+Only one exchange should run at a time against the same RabbitMQ. Two exchanges would each keep
+half the orders, and matches would be missed.
 
 ### `chat` arguments
 

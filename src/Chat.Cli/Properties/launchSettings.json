@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Chat.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "Angelo 100.74.122.113:5672"
+    },
+    "Profile 1": {
+      "commandName": "Project",
+      "commandLineArgs": "Jane 100.74.122.113:5672"
+    }
+  }
+}
