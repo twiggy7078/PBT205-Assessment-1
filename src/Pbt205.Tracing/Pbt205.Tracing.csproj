@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Task 3: shared contact tracing contracts and board logic. Used by Person.Cli, Tracker.Cli, Query.Cli and the GUI. -->
+  <ItemGroup>
+    <ProjectReference Include="..\Pbt205.Messaging\Pbt205.Messaging.csproj" />
+  </ItemGroup>
+</Project>

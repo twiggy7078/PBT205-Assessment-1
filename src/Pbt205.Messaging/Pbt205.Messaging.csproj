@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Shared RabbitMQ plumbing reused by every prototype (chat, trading, contact tracing). -->
+  <ItemGroup>
+    <PackageReference Include="RabbitMQ.Client" Version="7.2.2" />
+  </ItemGroup>
+</Project>

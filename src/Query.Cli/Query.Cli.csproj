@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Task 3: asks who a person has been in contact with. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>query</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pbt205.Tracing\Pbt205.Tracing.csproj" />
+  </ItemGroup>
+</Project>

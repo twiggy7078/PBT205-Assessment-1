@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Task 3: moves around the board and publishes its position. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>person</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pbt205.Tracing\Pbt205.Tracing.csproj" />
+  </ItemGroup>
+</Project>

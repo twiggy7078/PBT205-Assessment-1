@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Task 3: tracks positions and answers contact queries. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>tracker</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pbt205.Tracing\Pbt205.Tracing.csproj" />
+  </ItemGroup>
+</Project>

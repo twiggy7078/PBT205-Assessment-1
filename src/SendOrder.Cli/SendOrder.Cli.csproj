@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Task 2: submits one order and exits. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>sendOrder</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pbt205.Trading\Pbt205.Trading.csproj" />
+  </ItemGroup>
+</Project>

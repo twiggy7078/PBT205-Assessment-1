@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Chat logic shared by the console app (Task 1) and the GUI (final product). -->
+  <ItemGroup>
+    <ProjectReference Include="..\Pbt205.Messaging\Pbt205.Messaging.csproj" />
+  </ItemGroup>
+</Project>

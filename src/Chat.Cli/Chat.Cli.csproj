@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Task 1 command-line app. Builds to chat.exe. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>chat</AssemblyName>
+    <RootNamespace>Pbt205.Chat.Cli</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pbt205.Chat\Pbt205.Chat.csproj" />
+  </ItemGroup>
+</Project>

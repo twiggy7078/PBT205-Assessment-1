@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Task 2: shared trading contracts and order book. Used by SendOrder.Cli, Exchange.Cli and the GUI. -->
+  <ItemGroup>
+    <ProjectReference Include="..\Pbt205.Messaging\Pbt205.Messaging.csproj" />
+  </ItemGroup>
+</Project>
