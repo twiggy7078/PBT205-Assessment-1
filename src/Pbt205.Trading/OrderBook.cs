@@ -100,6 +100,21 @@ public sealed class OrderBook(string symbol)
         return trades;
     }
 
+    /// <summary>The current state of the book, best prices first, for sending to other apps.</summary>
+    public BookSnapshot Snapshot(int depth = 10)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(depth);
+        return new BookSnapshot(
+            Symbol,
+            Bids: [.. _buys.Take(depth).Select(ToEntry)],
+            Asks: [.. _sells.Take(depth).Select(ToEntry)],
+            LastTradedPrice,
+            DateTimeOffset.UtcNow);
+
+        static BookEntry ToEntry(RestingOrder resting) =>
+            new(resting.Order.Username, resting.Remaining, resting.Order.Price);
+    }
+
     private static bool IsAcceptable(OrderMessage incoming, OrderMessage resting) =>
         incoming.Side == OrderSide.Buy
             ? incoming.Price >= resting.Price

@@ -9,6 +9,7 @@ C# (.NET 10) prototypes that talk to each other through RabbitMQ.
 | `src/Chat.Cli` | **Task 1** command-line app (`chat.exe`) |
 | `src/Pbt205.Trading` | **Task 2** contracts and order book |
 | `src/SendOrder.Cli`, `src/Exchange.Cli` | **Task 2** command-line apps (`sendOrder.exe`, `exchange.exe`) |
+| `src/Trading.Gui` | **Task 2** final product: live prices window (Windows only) |
 | `src/Pbt205.Tracing` | **Task 3** contracts and board (skeleton) |
 | `src/Person.Cli`, `src/Tracker.Cli`, `src/Query.Cli` | **Task 3** command-line apps (skeletons) |
 
@@ -55,6 +56,18 @@ dotnet run --project src\SendOrder.Cli -- Jane 100.74.122.113:5672 BUY 100 10.25
 The exchange prints each order, any trades, and the state of the book. `sendOrder` sends one order
 and exits, as the brief requires. Add `--symbol ACME` to either app to use a different stock.
 
+#### Trading window (final product)
+
+```powershell
+dotnet run --project src\Trading.Gui
+```
+
+Fill in the endpoint and your RabbitMQ login, then press Connect. The window shows the latest price
+each stock traded at, the orders still waiting in the book, the most recent trades, and can send
+orders itself. It only listens and
+publishes: the exchange app still does the matching, so it must be running for anything to trade.
+This project needs Windows, since it uses WinForms.
+
 Only one exchange should run at a time against the same RabbitMQ. Two exchanges would each keep
 half the orders, and matches would be missed.
 
@@ -77,7 +90,8 @@ Exit codes: `0` normal, `1` bad arguments or no login, `2` could not connect.
 ## How the messaging works
 
 * Each topic in the brief is a **durable topic exchange** in RabbitMQ: `room`, `orders`, `trades`,
-  `position`, `query`, `query-response` (see `Topics.cs`).
+  `position`, `query`, `query-response` (see `Topics.cs`). We added one of our own, `book`, so the
+  trading window can show orders that have not traded yet.
 * For chat, the **routing key is the room name**, so one `room` exchange handles any number of rooms.
 * Each running app creates its **own private queue** (server-named, exclusive, auto-delete) bound to the
   exchange. Every app gets its own copy of each message. A single shared queue would instead hand each

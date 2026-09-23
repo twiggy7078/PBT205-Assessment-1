@@ -13,6 +13,10 @@ public static class Topics
     public const string Orders = "orders";
     public const string Trades = "trades";
 
+    // Beyond the brief: the exchange publishes the state of the order book so a GUI can show
+    // orders that are still waiting. Routing key is the stock symbol.
+    public const string Book = "book";
+
     // Task 3: contact tracing.
     public const string Position = "position";
     public const string Query = "query";

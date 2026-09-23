@@ -11,6 +11,7 @@ Topic names live in `src/Pbt205.Messaging/Topics.cs`.
 | `room` | room name (`general`) | chat | chat | `ChatMessage` |
 | `orders` | stock symbol (`XYZ`) | sendOrder | exchange | `OrderMessage` |
 | `trades` | stock symbol | exchange | GUI, anyone watching | `TradeMessage` |
+| `book` * | stock symbol | exchange | trading GUI | `BookSnapshot` |
 | `position` | person id | person | tracker, GUI | `PositionMessage` |
 | `query` | person id | query | tracker | `ContactQuery` |
 | `query-response` | person id | tracker | query, GUI | `ContactQueryResponse` |
@@ -32,6 +33,17 @@ Topic names live in `src/Pbt205.Messaging/Topics.cs`.
 { "tradeId": "9ac2...", "symbol": "XYZ", "buyer": "Andrew", "seller": "Jane",
   "quantity": 100, "price": 10.50, "tradedAt": "..." }
 ```
+
+\* `book` is ours, not the brief's. After each order the exchange publishes the state of that
+stock's book, so the trading window can show orders that are still waiting:
+
+```json
+{ "symbol": "XYZ", "lastTradedPrice": 10.00, "asOf": "...",
+  "bids": [ { "username": "Jane", "quantity": 150, "price": 10.25 } ],
+  "asks": [ { "username": "Andrew", "quantity": 100, "price": 10.50 } ] }
+```
+
+Both sides are best price first, at most ten deep.
 
 Matching rules, agreed as a group:
 

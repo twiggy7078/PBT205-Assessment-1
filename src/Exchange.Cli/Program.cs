@@ -94,6 +94,7 @@ static async Task HandleOrderAsync(
     }
 
     IReadOnlyList<TradeMessage> trades;
+    BookSnapshot snapshot;
     string bookState;
 
     // One order at a time, so the book can't be changed from under us.
@@ -111,6 +112,7 @@ static async Task HandleOrderAsync(
             $"> {order.Side.ToString().ToUpperInvariant()} {order.Quantity} {symbol} @ {Money(order.Price)} from {order.Username}");
 
         trades = book.Add(order);
+        snapshot = book.Snapshot();
         bookState = $"  book {symbol}: bid {Money(book.BestBid)} / ask {Money(book.BestAsk)}, " +
                     $"{book.Buys.Count} buys, {book.Sells.Count} sells";
     }
@@ -137,6 +139,9 @@ static async Task HandleOrderAsync(
         Console.WriteLine("  no match, resting in the book");
     }
     Console.WriteLine(bookState);
+
+    // Beyond the brief: tell any GUI what the book looks like now, so waiting orders are visible.
+    await bus.PublishAsync(Topics.Book, snapshot.Symbol, snapshot, cancellationToken).ConfigureAwait(false);
 }
 
 static string Money(decimal? value) =>
