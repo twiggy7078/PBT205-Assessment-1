@@ -5,8 +5,9 @@ C# (.NET 10) prototypes that talk to each other through RabbitMQ.
 | Project | What it is |
 |---|---|
 | `src/Pbt205.Messaging` | Shared RabbitMQ code used by every task: connecting, publishing and subscribing |
-| `src/Pbt205.Chat` | Chat room logic, shared by the console app and the future GUI |
+| `src/Pbt205.Chat` | Chat room logic, shared by the console app and the window |
 | `src/Chat.Cli` | **Task 1** command-line app (`chat.exe`) |
+| `src/Chat.Gui` | **Task 1** final product: chat window with room selection (Windows only) |
 | `src/Pbt205.Trading` | **Task 2** contracts and order book |
 | `src/SendOrder.Cli`, `src/Exchange.Cli` | **Task 2** command-line apps (`sendOrder.exe`, `exchange.exe`) |
 | `src/Trading.Gui` | **Task 2** final product: live prices window (Windows only) |
@@ -51,6 +52,16 @@ dotnet run --project src/Chat.Cli -- Jane   100.74.122.113:5672
 dotnet run --project src/Chat.Cli -- Jacobo 100.74.122.113:5672 --room general
 dotnet run --project src/Chat.Cli -- Angelo 100.74.122.113:5672 --room study
 ```
+
+#### Chat window (final product)
+
+```powershell
+dotnet run --project src\Chat.Gui
+```
+
+Fill in the endpoint, your RabbitMQ login, the name others will see and the room, then press Join.
+Type a message and press Enter or click Send. Press Leave to go back to the login fields, where you
+can pick a different room. This project needs Windows, since it uses WinForms.
 
 ### Task 2: trading
 
