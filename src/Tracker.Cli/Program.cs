@@ -7,8 +7,13 @@
 //   2. BrokerEndpoint.TryParse, then BrokerCredentials.FromEnvironmentOrPrompt.
 //   3. MessageBus.ConnectAsync, then publish or subscribe.
 
-using System;
+using System.Text;
+using Pbt205.Messaging;
 using Pbt205.Tracing;
+
+
+Console.OutputEncoding = Encoding.UTF8;
+Console.InputEncoding = Encoding.UTF8;
 
 if (args.Any(a => a is "-h" or "--help" or "/?"))
 {
@@ -16,11 +21,32 @@ if (args.Any(a => a is "-h" or "--help" or "/?"))
     return 0;
 }
 
-TryParseArguments(args, out string endpoint, out int boardSize, out string? argumentError);
+// Parse and validate arguments
+if (!TryParseArguments(args, out string endpointText, out int boardSize, out string? argumentError))
+{
+    Console.Error.WriteLine(argumentError);
+    PrintUsage();
+    return 1;
+}
 
+// Validate the endpoint format using BrokerEndpoint.TryParse
+if (!BrokerEndpoint.TryParse(endpointText, out BrokerEndpoint? endpoint, out string endpointError))
+{
+    Console.Error.WriteLine(endpointError);
+    return 1;
+}
 
+// Retrieve credentials and connect
+BrokerCredentials? credentials = BrokerCredentials.FromEnvironmentOrPrompt();
+if (credentials is null)
+{
+    Console.Error.WriteLine(
+        $"No RabbitMQ login. Set {BrokerCredentials.UserVariable} and {BrokerCredentials.PasswordVariable}, " +
+        "or run the app in a console so it can ask.");
+    return 1;
+}
 
-return 1;
+return 0;
 
 static bool TryParseArguments(
     string[] args,
