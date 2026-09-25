@@ -46,8 +46,96 @@ if (credentials is null)
     return 1;
 }
 
-return 0;
+var board = new Board(boardSize);
+var tracker = new ContactTracker(board);
+var stateLock = new SemaphoreSlim(1, 1);
 
+using var shutdown = new CancellationTokenSource();
+Console.CancelKeyPress += (_, e) =>
+{
+    e.Cancel = true;
+    shutdown.Cancel();
+};
+
+try
+{
+    await using MessageBus bus = await MessageBus.ConnectAsync(endpoint, credentials, "tracker", shutdown.Token);
+    bus.StatusChanged += message => Console.WriteLine($"* {message}");
+
+    // sSubscribe to position updates from all connections
+    await bus.SubscribeAsync<PositionMessage>(
+        Topics.Position,
+        "#",
+        async (posMsg, ctx) =>
+        {
+            await stateLock.WaitAsync(shutdown.Token).ConfigureAwait(false);
+            try
+            {
+                var contacts = tracker.UpdatePosition(posMsg.Person, posMsg.X, posMsg.Y, posMsg.MovedAt);
+                Console.WriteLine($"> POSITION: {posMsg.Person} at ({posMsg.X}, {posMsg.Y})");
+                foreach (var c in contacts)
+                {
+                    Console.WriteLine($"  > CONTACT: {posMsg.Person} met {c.Person} at ({c.X}, {c.Y})");
+                }
+            }
+            finally
+            {
+                stateLock.Release();
+            }
+        },
+        ex => Console.Error.WriteLine($"POSITION ERROR: {ex.Message}"),
+        shutdown.Token);
+
+    // also subscribe to query requests
+    await bus.SubscribeAsync<ContactQuery>(
+        Topics.Query,
+        "#",
+        async (query, ctx) =>
+        {
+            IReadOnlyList<Contact> contacts;
+            await stateLock.WaitAsync(shutdown.Token).ConfigureAwait(false);
+            try
+            {
+                contacts = tracker.GetContacts(query.Person);
+            }
+            finally
+            {
+                stateLock.Release();
+            }
+
+            var response = new ContactQueryResponse(
+                query.CorrelationId,
+                query.Person,
+                contacts,
+                DateTimeOffset.UtcNow);
+
+            await bus.PublishAsync(
+                Topics.QueryResponse,
+                query.Person,
+                response,
+                shutdown.Token).ConfigureAwait(false);
+
+            Console.WriteLine($"* Query for '{query.Person}' answered with {contacts.Count} contact(s).");
+        },
+        ex => Console.Error.WriteLine($"QUERY ERROR: {ex.Message}"),
+        shutdown.Token);
+
+    Console.WriteLine($"* Tracker for board [{board.Size}x{board.Size}] active. Waiting for positions and queries...");
+    Console.WriteLine("* Press Ctrl+C to stop.");
+
+    await Task.Delay(Timeout.Infinite, shutdown.Token);
+    return 0;
+}
+catch (OperationCanceledException)
+{
+    Console.WriteLine("* Tracker stopped.");
+    return 0;
+}
+catch (MessageBusException ex)
+{
+    Console.Error.WriteLine(ex.Message);
+    return 2;
+}
 static bool TryParseArguments(
     string[] args,
     out string endpointText,
