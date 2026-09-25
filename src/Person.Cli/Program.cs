@@ -68,8 +68,8 @@ try
     TimeSpan moveInterval = TimeSpan.FromSeconds(1.0 / movesPerSecond);
     using var timer = new PeriodicTimer(moveInterval);
 
-    Console.WriteLine($"* Person '{personId}' active on {board.Size}x{board.Size} grid @ {movesPerSecond:0.##} moves/sec.");
-    Console.WriteLine($"* Starting position: ({x}, {y}). Press Ctrl+C to stop.");
+    Console.WriteLine($"* Person '{personId}' active on {board.Size}x{board.Size} board at {movesPerSecond:0.##} moves/sec.");
+    Console.WriteLine($"* Starting position: [{x}, {y}]. Press Ctrl+C to stop.");
 
     // Publish initial starting position
     await PublishPositionAsync(bus, personId, x, y, shutdown.Token).ConfigureAwait(false);

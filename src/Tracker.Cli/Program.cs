@@ -72,7 +72,7 @@ try
             try
             {
                 var contacts = tracker.UpdatePosition(posMsg.Person, posMsg.X, posMsg.Y, posMsg.MovedAt);
-                Console.WriteLine($"> POSITION: {posMsg.Person} at ({posMsg.X}, {posMsg.Y})");
+                Console.WriteLine($"> POSITION: {posMsg.Person} at [{posMsg.X}, {posMsg.Y}]");
                 foreach (var c in contacts)
                 {
                     Console.WriteLine($"  > CONTACT: {posMsg.Person} met {c.Person} at ({c.X}, {c.Y})");
