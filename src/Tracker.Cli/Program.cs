@@ -148,15 +148,13 @@ static bool TryParseArguments(
 
     var positional = new List<string>();
 
-    for (int i = 0; i < args.Length; i++)
+    for (var i = 0; i < args.Length; i++)
     {
         if (args[i] is "--board-size" or "-b")
         {
-            if (i + 1 >= args.Length || !int.TryParse(args[++i], out boardSize) || boardSize <= 0)
-            {
-                error = $"Option '{args[i - 1]}' requires a positive integer board size.";
-                return false;
-            }
+            if (i + 1 < args.Length && int.TryParse(args[++i], out boardSize) && boardSize > 0) continue;
+            error = $"Option '{args[i - 1]}' requires a positive integer board size.";
+            return false;
         }
         else if (args[i].StartsWith('-'))
         {
