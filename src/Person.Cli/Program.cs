@@ -53,8 +53,41 @@ Console.CancelKeyPress += (_, e) =>
 
 try
 {
+    await using MessageBus bus = await MessageBus.ConnectAsync(
+        endpoint,
+        credentials,
+        $"person: {personId}",
+        shutdown.Token);
 
-    return 1;
+    bus.StatusChanged += message => Console.WriteLine($"* {message}");
+
+    // Spawn at a random location on the board
+    int x = Random.Shared.Next(0, board.Size);
+    int y = Random.Shared.Next(0, board.Size);
+
+    TimeSpan moveInterval = TimeSpan.FromSeconds(1.0 / movesPerSecond);
+    using var timer = new PeriodicTimer(moveInterval);
+
+    Console.WriteLine($"* Person '{personId}' active on {board.Size}x{board.Size} grid @ {movesPerSecond:0.##} moves/sec.");
+    Console.WriteLine($"* Starting position: ({x}, {y}). Press Ctrl+C to stop.");
+
+    // Publish initial starting position
+    await PublishPositionAsync(bus, personId, x, y, shutdown.Token).ConfigureAwait(false);
+
+    // Main simulation loop
+    while (!shutdown.IsCancellationRequested && await timer.WaitForNextTickAsync(shutdown.Token).ConfigureAwait(false))
+    {
+        // Random step in 8 directions (or stay)
+        int dx = Random.Shared.Next(-1, 2);
+        int dy = Random.Shared.Next(-1, 2);
+
+        // Clamp inside board boundaries
+        (x, y) = board.Clamp(x + dx, y + dy);
+
+        await PublishPositionAsync(bus, personId, x, y, shutdown.Token).ConfigureAwait(false);
+    }
+
+    return 0;
 }
 catch (OperationCanceledException)
 {
@@ -63,10 +96,21 @@ catch (OperationCanceledException)
 }
 catch (MessageBusException ex)
 {
-    Console.Error.WriteLine($"! Communication error: {ex.Message}");
+    Console.Error.WriteLine($"COMMS ERROR: {ex.Message}");
     return 2;
 }
 
+static async Task PublishPositionAsync(
+    MessageBus bus,
+    string personId,
+    int x,
+    int y,
+    CancellationToken cancellationToken)
+{
+    var message = new PositionMessage(personId, x, y, DateTimeOffset.UtcNow);
+    await bus.PublishAsync(Topics.Position, personId, message, cancellationToken).ConfigureAwait(false);
+    Console.WriteLine($"> [{message.MovedAt:HH:mm:ss.fff}] {personId} at [{x}, {y}]");
+}
 
 static bool TryParseArguments(
     string[] args,
