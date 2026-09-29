@@ -44,6 +44,7 @@ if (credentials is null)
 }
 
 var board = new Board(boardSize);
+var clientId = Guid.NewGuid();
 using var shutdown = new CancellationTokenSource();
 Console.CancelKeyPress += (_, e) =>
 {
@@ -72,7 +73,7 @@ try
     Console.WriteLine($"* Starting position: [{x}, {y}]. Press Ctrl+C to stop.");
 
     // Publish initial starting position
-    await PublishPositionAsync(bus, personId, x, y, shutdown.Token).ConfigureAwait(false);
+    await PublishPositionAsync(bus, clientId, personId, x, y, shutdown.Token).ConfigureAwait(false);
 
     // Main simulation loop
     while (!shutdown.IsCancellationRequested && await timer.WaitForNextTickAsync(shutdown.Token).ConfigureAwait(false))
@@ -84,7 +85,7 @@ try
         // Clamp inside board boundaries
         (x, y) = board.Clamp(x + dx, y + dy);
 
-        await PublishPositionAsync(bus, personId, x, y, shutdown.Token).ConfigureAwait(false);
+        await PublishPositionAsync(bus, clientId, personId, x, y, shutdown.Token).ConfigureAwait(false);
     }
 
     return 0;
@@ -102,12 +103,13 @@ catch (MessageBusException ex)
 
 static async Task PublishPositionAsync(
     MessageBus bus,
+    Guid clientId,
     string personId,
     int x,
     int y,
     CancellationToken cancellationToken)
 {
-    var message = new PositionMessage(personId, x, y, DateTimeOffset.UtcNow);
+    var message = new PositionMessage(clientId, personId, x, y, DateTimeOffset.UtcNow);
     await bus.PublishAsync(Topics.Position, personId, message, cancellationToken).ConfigureAwait(false);
     Console.WriteLine($"> [{message.MovedAt:HH:mm:ss.fff}] {personId} at [{x}, {y}]");
 }

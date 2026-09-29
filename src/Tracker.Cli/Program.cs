@@ -67,12 +67,12 @@ try
             try
             {
                 // try to update position
-                if (tracker.TryUpdatePosition(posMsg.Person, posMsg.X, posMsg.Y, posMsg.MovedAt, out var contactsMade))
+                if (tracker.TryUpdatePosition(posMsg.ClientId, posMsg.Person, posMsg.X, posMsg.Y, posMsg.MovedAt, out var resolvedName, out var contactsMade))
                 { // only update if they did move
-                    Console.WriteLine($"> POSITION: {posMsg.Person} at [{posMsg.X}, {posMsg.Y}]");
+                    Console.WriteLine($"> POSITION: {resolvedName} at [{posMsg.X}, {posMsg.Y}]");
                     foreach (var c in contactsMade)
                     {
-                        Console.WriteLine($"  > CONTACT: {posMsg.Person} met {c.Person} at ({c.X}, {c.Y})");
+                        Console.WriteLine($"  > CONTACT: {resolvedName} met {c.Person} at ({c.X}, {c.Y})");
                     }
                 }
             }

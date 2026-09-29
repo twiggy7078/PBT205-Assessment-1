@@ -2,10 +2,9 @@ namespace Pbt205.Tracing;
 
 /// <summary>
 /// A person's position, published to the "position" topic. Routing key is the person's name.
-/// { "person": "andrew", "x": 3, "y": 7, "movedAt": "2026-09-23T04:00:00+00:00" }
+/// { "Guid": "", "person": "andrew", "x": 3, "y": 7, "movedAt": "2026-09-23T04:00:00+00:00" }
 /// </summary>
-public sealed record PositionMessage(string Person, int X, int Y, DateTimeOffset MovedAt);
-
+public sealed record PositionMessage(Guid ClientId, string Person, int X, int Y, DateTimeOffset MovedAt);
 /// <summary>
 /// A request sent to the "query" topic asking who a person has been in contact with.
 /// The tracker replies on "query-response" using the same CorrelationId,
