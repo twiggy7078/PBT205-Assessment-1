@@ -1,6 +1,6 @@
 ﻿namespace Pbt205.Tracing;
 
-public sealed class ContactTracker(Board board)
+public sealed class ContactTracker()
 {
     private readonly Dictionary<string, (int X, int Y)> _personPositions = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<(int X, int Y), HashSet<string>> _gridOccupancy = new();
@@ -9,11 +9,11 @@ public sealed class ContactTracker(Board board)
     public bool TryUpdatePosition(string person, int x, int y, DateTimeOffset movedAt,
         out IReadOnlyList<Contact> contactsMade)
     {
-        var clamped = board.Clamp(x, y);
+        var pos = (x, y);
         var contacts = new List<Contact>();
         
         // check if person staying still
-        if (clamped == _personPositions.GetValueOrDefault(person))
+        if (pos == _personPositions.GetValueOrDefault(person))
         {
             contactsMade = contacts;
             return false;
@@ -30,11 +30,11 @@ public sealed class ContactTracker(Board board)
         }
 
         // then place them on new one
-        _personPositions[person] = clamped;
-        if (!_gridOccupancy.TryGetValue(clamped, out var currentOccupants))
+        _personPositions[person] = pos;
+        if (!_gridOccupancy.TryGetValue(pos, out var currentOccupants))
         {
             currentOccupants = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _gridOccupancy[clamped] = currentOccupants;
+            _gridOccupancy[pos] = currentOccupants;
         }
 
         // record contacts with anyone already here
@@ -42,8 +42,8 @@ public sealed class ContactTracker(Board board)
         {
             if (string.Equals(other, person, StringComparison.OrdinalIgnoreCase)) continue;
 
-            var contactForPerson = new Contact(other, clamped.Item1, clamped.Item2, movedAt);
-            var contactForOther = new Contact(person, clamped.Item1, clamped.Item2, movedAt);
+            var contactForPerson = new Contact(other, pos.Item1, pos.Item2, movedAt);
+            var contactForOther = new Contact(person, pos.Item1, pos.Item2, movedAt);
 
             RecordContact(person, contactForPerson);
             RecordContact(other, contactForOther);

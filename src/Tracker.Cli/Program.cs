@@ -1,11 +1,6 @@
 // Task 3: tracks positions and answers contact queries.
 //
-// Usage: tracker <endpoint> [--board-size 10]
-//
-// TODO: not written yet. Follow the pattern in src/Chat.Cli/Program.cs:
-//   1. Parse and validate the arguments.
-//   2. BrokerEndpoint.TryParse, then BrokerCredentials.FromEnvironmentOrPrompt.
-//   3. MessageBus.ConnectAsync, then publish or subscribe.
+// Usage: tracker <endpoint>
 
 using System.Text;
 using Pbt205.Messaging;
@@ -22,7 +17,7 @@ if (args.Any(a => a is "-h" or "--help" or "/?"))
 }
 
 // Parse and validate arguments
-if (!TryParseArguments(args, out string endpointText, out int boardSize, out string? argumentError))
+if (!TryParseArguments(args, out string endpointText, out string? argumentError))
 {
     Console.Error.WriteLine(argumentError);
     PrintUsage();
@@ -46,8 +41,8 @@ if (credentials is null)
     return 1;
 }
 
-var board = new Board(boardSize);
-var tracker = new ContactTracker(board);
+var board = new Board();
+var tracker = new ContactTracker();
 var stateLock = new SemaphoreSlim(1, 1);
 
 using var shutdown = new CancellationTokenSource();
@@ -123,7 +118,7 @@ try
         ex => Console.Error.WriteLine($"QUERY ERROR: {ex.Message}"),
         shutdown.Token);
 
-    Console.WriteLine($"* Tracker for board [{board.Size}x{board.Size}] active. Waiting for positions and queries...");
+    Console.WriteLine($"* Tracker active. Waiting for positions and queries...");
     Console.WriteLine("* Press Ctrl+C to stop.");
 
     await Task.Delay(Timeout.Infinite, shutdown.Token);
@@ -142,32 +137,21 @@ catch (MessageBusException ex)
 static bool TryParseArguments(
     string[] args,
     out string endpointText,
-    out int boardSize,
     [System.Diagnostics.CodeAnalysis.NotNullWhen(false)] out string? error)
 {
     endpointText = string.Empty;
-    boardSize = Board.DefaultSize;
     error = null;
 
     var positional = new List<string>();
 
-    for (var i = 0; i < args.Length; i++)
+    foreach (var arg in args)
     {
-        if (args[i] is "--board-size" or "-b")
+        if (arg.StartsWith('-'))
         {
-            if (i + 1 < args.Length && int.TryParse(args[++i], out boardSize) && boardSize > 0) continue;
-            error = $"Option '{args[i - 1]}' requires a positive integer board size.";
+            error = $"Unknown flags '{arg}'. Tracker does not support any flags.";
             return false;
         }
-        else if (args[i].StartsWith('-'))
-        {
-            error = $"Unknown option '{args[i]}'.";
-            return false;
-        }
-        else
-        {
-            positional.Add(args[i]);
-        }
+        positional.Add(arg);
     }
 
     if (positional.Count != 1)
@@ -184,14 +168,13 @@ static void PrintUsage()
 {
     Console.WriteLine("""
 
-                      Usage: tracker <endpoint> [--board-size <size>]
+                      Usage: tracker <endpoint>
 
                         <endpoint>          RabbitMQ endpoint: 5672, host:5672 or amqp://host:5672
-                        --board-size, -b    the starting size of the board (default: 10)
 
                       RabbitMQ login: set PBT205_RABBITMQ_USER and PBT205_RABBITMQ_PASSWORD,
                       or the app will ask for them.
 
-                      Example: chat Andrew 100.74.122.113:5672 --room general
+                      Example: tracker 100.74.122.113:5672
                       """);
 }
