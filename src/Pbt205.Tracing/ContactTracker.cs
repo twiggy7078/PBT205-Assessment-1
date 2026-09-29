@@ -6,10 +6,18 @@ public sealed class ContactTracker(Board board)
     private readonly Dictionary<(int X, int Y), HashSet<string>> _gridOccupancy = new();
     private readonly Dictionary<string, List<Contact>> _contactHistory = new(StringComparer.OrdinalIgnoreCase);
 
-    public IReadOnlyList<Contact> UpdatePosition(string person, int x, int y, DateTimeOffset movedAt)
+    public bool TryUpdatePosition(string person, int x, int y, DateTimeOffset movedAt,
+        out IReadOnlyList<Contact> contactsMade)
     {
         var clamped = board.Clamp(x, y);
-        var contactsMade = new List<Contact>();
+        var contacts = new List<Contact>();
+        
+        // check if person staying still
+        if (clamped == _personPositions.GetValueOrDefault(person))
+        {
+            contactsMade = contacts;
+            return false;
+        }
 
         // remove person from previous square
         if (_personPositions.TryGetValue(person, out var oldPos))
@@ -40,11 +48,12 @@ public sealed class ContactTracker(Board board)
             RecordContact(person, contactForPerson);
             RecordContact(other, contactForOther);
 
-            contactsMade.Add(contactForPerson);
+            contacts.Add(contactForPerson);
         }
         
         currentOccupants.Add(person);
-        return contactsMade;
+        contactsMade = contacts;
+        return true;
     }
     
     public IReadOnlyList<Contact> GetContacts(string person)
