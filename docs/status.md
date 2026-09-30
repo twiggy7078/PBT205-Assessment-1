@@ -9,7 +9,7 @@ Last updated: 23 September 2026. Update this file when you finish something.
 | Andrew | Middleware, shared library, Tasks 1 and 2 code. Integration support for Task 3 |
 | Jane | Reports for Tasks 1 and 2 (writing packs are in the Assessment 1 folder) |
 | Jacobo | Task 3: the `person` and `tracker` applications |
-| Angelo | Task 3: the `query` application and the contact tracing window, plus organising the group test session |
+| Angelo | Task 3: the `query` application, checking the whole thing builds and runs on macOS, and organising the group test session |
 
 ## Quick view
 
@@ -23,11 +23,13 @@ Last updated: 23 September 2026. Update this file when you finish something.
 | **Task 2** `sendOrder` and `exchange` | Done and tested live | Andrew |
 | **Task 2** trading window (final product) | Done | Andrew |
 | **Task 3** `person` and `tracker` | **Not started.** Skeletons and message contracts only | Jacobo |
-| **Task 3** `query` and the tracing window | **Not started.** Skeletons and message contracts only | Angelo |
+| **Task 3** `query` | **Not started.** Skeletons and message contracts only | Angelo |
+| **Task 3** tracing window | **Not started.** Needs a Windows machine | |
 | Report 1 (chat) | Being written | Jane |
 | Report 2 (trading) | Being written | Jane |
 | Report 3 (contact tracing) | Waiting on Task 3 code | |
 | Group test with everyone connected | Not done | Everyone |
+| Three demo videos, one per task | Not started. See `docs/demo-videos.md` | |
 
 ## What needs doing, roughly in order
 
@@ -104,3 +106,13 @@ Write the decisions into `docs/message-contracts.md` so report 3 can quote them 
   marker will run it, and the three reports agreeing with each other.
 * Somebody other than Andrew building and running both windows, since they have only ever run on one
   machine.
+
+## Platforms
+
+The command-line applications target plain .NET and run on Windows, macOS and Linux. Both windows
+use Windows Forms, so they build anywhere but only run on Windows. Angelo is on a Mac, so the
+contact tracing window needs a Windows owner, and Angelo instead checks that the solution builds and
+the console apps run on macOS, which is what the facilitator will see.
+
+Our facilitator uses a Mac, so he will not be able to run the windows himself. The three demo videos
+are how the final products get assessed. Say so in one line in each report.
