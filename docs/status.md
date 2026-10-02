@@ -1,6 +1,6 @@
 # Where we are
 
-Last updated: 23 September 2026. Update this file when you finish something.
+Last updated: 3 October 2026. Update this file when you finish something.
 
 ## Who is doing what
 
@@ -22,12 +22,12 @@ Last updated: 23 September 2026. Update this file when you finish something.
 | **Task 2** order book and matching | Done, 21 checks passing | Andrew |
 | **Task 2** `sendOrder` and `exchange` | Done and tested live | Andrew |
 | **Task 2** trading window (final product) | Done | Andrew |
-| **Task 3** `person` and `tracker` | **Not started.** Skeletons and message contracts only | Jacobo |
-| **Task 3** `query` | **Not started.** Skeletons and message contracts only | Angelo |
+| **Task 3** `person` and `tracker` | Written and merged into main. Not yet run against the broker by the group | Jacobo |
+| **Task 3** `query` | **Not started.** Unblocked now that the contract is in main | Angelo |
 | **Task 3** tracing window | **Not started.** Needs a Windows machine | |
+| Report 3 (contact tracing) | Waiting on the apps being finished and tested | |
 | Report 1 (chat) | Being written | Jane |
 | Report 2 (trading) | Being written | Jane |
-| Report 3 (contact tracing) | Waiting on Task 3 code | |
 | Group test with everyone connected | Not done | Everyone |
 | Three demo videos, one per task | Not started. See `docs/demo-videos.md` | |
 
@@ -116,3 +116,20 @@ the console apps run on macOS, which is what the facilitator will see.
 
 Our facilitator uses a Mac, so he will not be able to run the windows himself. The three demo videos
 are how the final products get assessed. Say so in one line in each report.
+
+## Open points from the Task 3 review (pull request #1)
+
+Merged on 3 October. None of these blocked the merge, but they need settling:
+
+* **Renaming is undocumented.** If two people start with the same name, the tracker calls the
+  second one `Bob-2`. The person's own console still shows `Bob`, and `query` has to be run with
+  the resolved name. Add it to `docs/message-contracts.md`, and write it up in report 3 as a
+  decision rather than an accident.
+* **One line in the contracts doc is now wrong.** It says positions are clamped to the board.
+  Only `person` clamps now; the tracker trusts what it receives.
+* **Board size is per person.** Two people can run with different sizes, which makes drawing the
+  board ambiguous. Simplest answer: the window takes a board size argument and everyone uses the
+  same one for the demo. Jacobo, Angelo and Andrew to agree.
+* **Leftovers in `ContactTracker`:** `_nameCounters` and `_lastSeen` are written but never read.
+  `_lastSeen` would be the basis for dropping people who stop running, which is the ghost-on-the-
+  board problem, if anyone wants to finish that thought.
