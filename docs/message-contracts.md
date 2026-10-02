@@ -55,12 +55,28 @@ Matching rules, agreed as a group:
 ## Task 3: contact tracing
 
 ```json
-{ "person": "andrew", "x": 3, "y": 7, "movedAt": "..." }
+{ 
+  "clientId": "3b1e...", 
+  "person": "andrew", 
+  "x": 3, 
+  "y": 7, 
+  "movedAt": "2026-09-23T04:00:00+00:00"
+}
 
-{ "correlationId": "7d4f...", "person": "andrew", "askedAt": "..." }
+{ 
+  "correlationId": "7d4f...", 
+  "person": "andrew", 
+  "askedAt": "2026-09-23T04:00:00+00:00"
+}
 
-{ "correlationId": "7d4f...", "person": "andrew", "answeredAt": "...",
-  "contacts": [ { "person": "jane", "x": 3, "y": 7, "metAt": "..." } ] }
+{
+  "correlationId": "7d4f...",
+  "person": "andrew",
+  "answeredAt": "2026-09-23T04:00:00+00:00",
+  "contacts": [
+    { "person": "jane", "x": 3, "y": 7, "metAt": "2026-09-23T04:00:00+00:00" }
+  ]
+}
 ```
 
 * A contact is recorded when two people occupy the same square at the same time.
