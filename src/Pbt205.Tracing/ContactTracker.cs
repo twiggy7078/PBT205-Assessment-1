@@ -33,21 +33,21 @@ public sealed class ContactTracker()
         var pos = (x, y);
         var contacts = new List<Contact>();
         
-        // check if person staying still
-        if (pos == _personPositions.GetValueOrDefault(resolvedName))
-        {
-            contactsMade = contacts;
-            return false;
-        }
-
-        // remove person from previous square
+        // check if person first exists
         if (_personPositions.TryGetValue(resolvedName, out var oldPos))
-        {
+        {// then check if staying still
+            if (pos == oldPos)
+            {
+                contactsMade = contacts;
+                return false;
+            }
+            // remove person from previous square
             if (_gridOccupancy.TryGetValue(oldPos, out var occupants))
             {
                 occupants.Remove(resolvedName);
                 if (occupants.Count == 0) _gridOccupancy.Remove(oldPos);
-            }
+            } 
+            
         }
 
         // then place them on new one
