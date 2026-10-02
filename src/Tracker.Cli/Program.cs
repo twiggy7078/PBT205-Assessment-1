@@ -41,7 +41,6 @@ if (credentials is null)
     return 1;
 }
 
-var board = new Board();
 var tracker = new ContactTracker();
 var stateLock = new SemaphoreSlim(1, 1);
 

@@ -134,18 +134,20 @@ static bool TryParseArguments(
     {
         switch (args[i])
         {
-            case "--moves-per-second" or "-m" when i + 1 < args.Length &&
-                                                   double.TryParse(args[++i], NumberStyles.Float, CultureInfo.InvariantCulture, out movesPerSecond) &&
-                                                   !(movesPerSecond <= 0):
-                continue;
+            case "--moves-per-second" or "-m" when 
+                i + 1 < args.Length &&
+                double.TryParse(args[++i], NumberStyles.Float, CultureInfo.InvariantCulture, out movesPerSecond) &&
+                !(movesPerSecond <= 0):
+                    continue;
             case "--moves-per-second" or "-m":
                 error = $"Option '{args[i - 1]}' requires a positive movement rate (e.g. 1 or 0.5).";
                 return false;
             case "--board-size" or "-b":
             {
-                if (i + 1 >= args.Length || !int.TryParse(args[++i], out boardSize) || boardSize <= 0)
+                // validation includes assigning the board size
+                if (i + 1 >= args.Length || !int.TryParse(args[++i], out boardSize) || boardSize is <= 1 or > 1000)
                 {
-                    error = $"Option '{args[i - 1]}' requires a positive integer board size.";
+                    error = $"Option '{args[i - 1]}' requires a positive integer board size greater than 1 and less than or equal to 1000.";
                     return false;
                 }
 
