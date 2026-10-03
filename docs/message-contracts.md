@@ -79,7 +79,17 @@ Matching rules, agreed as a group:
 }
 ```
 
-* A contact is recorded when two people occupy the same square at the same time.
+* A contact is recorded when two people occupy the same square at the same time. It is recorded
+  once, when someone arrives on an occupied square, and for both people.
 * Contacts come back newest first.
 * `correlationId` lets each query app pick out its own answer from `query-response`.
-* Positions are clamped to the board, so nobody walks off the edge.
+* `person` keeps itself inside its own board, so nobody walks off the edge. The tracker does not
+  clamp: it trusts the positions it receives.
+* **Board size is a convention, not a rule.** Each `person` is given its board size at start-up and
+  nothing carries it in the messages, so the tracker and the window cannot tell what size anyone is
+  using. The group agreed (option A, 3 October) that everyone passes the same `--board-size` for a
+  run, and the window is set to match. Putting the size in `PositionMessage` was considered and
+  rejected as more than the brief asks for. Write this up in report 3 as a limitation.
+* **Duplicate names are renamed.** If two people start with the same identifier, the tracker gives
+  the second one `Name-2`. The person's own console still shows the name it was started with, so a
+  lookup has to use the resolved name shown by the tracker.

@@ -24,7 +24,7 @@ Last updated: 3 October 2026. Update this file when you finish something.
 | **Task 2** trading window (final product) | Done | Andrew |
 | **Task 3** `person` and `tracker` | Written and merged into main. Not yet run against the broker by the group | Jacobo |
 | **Task 3** `query` | **Not started.** Unblocked now that the contract is in main | Angelo |
-| **Task 3** tracing window | Written, needs building and a live test | Andrew |
+| **Task 3** tracing window | Done. Tested with four people and the tracker on 3 October | Andrew |
 | Report 3 (contact tracing) | Waiting on the apps being finished and tested | |
 | Report 1 (chat) | Being written | Jane |
 | Report 2 (trading) | Being written | Jane |
@@ -121,15 +121,10 @@ are how the final products get assessed. Say so in one line in each report.
 
 Merged on 3 October. None of these blocked the merge, but they need settling:
 
-* **Renaming is undocumented.** If two people start with the same name, the tracker calls the
-  second one `Bob-2`. The person's own console still shows `Bob`, and `query` has to be run with
-  the resolved name. Add it to `docs/message-contracts.md`, and write it up in report 3 as a
-  decision rather than an accident.
-* **One line in the contracts doc is now wrong.** It says positions are clamped to the board.
-  Only `person` clamps now; the tracker trusts what it receives.
-* **Board size is per person.** Two people can run with different sizes, which makes drawing the
-  board ambiguous. Simplest answer: the window takes a board size argument and everyone uses the
-  same one for the demo. Jacobo, Angelo and Andrew to agree.
+* ~~Renaming undocumented~~, ~~clamping line wrong~~, ~~board size undecided~~: all three are now
+  written up in `docs/message-contracts.md` (3 October). The group chose option A on board size:
+  everyone passes the same `--board-size` for a run and the window is set to match, rather than
+  carrying the size in the messages. Report 3 should cover it as a limitation.
 * **Leftovers in `ContactTracker`:** `_nameCounters` and `_lastSeen` are written but never read.
   `_lastSeen` would be the basis for dropping people who stop running, which is the ghost-on-the-
   board problem, if anyone wants to finish that thought.
