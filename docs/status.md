@@ -24,7 +24,7 @@ Last updated: 3 October 2026. Update this file when you finish something.
 | **Task 2** trading window (final product) | Done | Andrew |
 | **Task 3** `person` and `tracker` | Written and merged into main. Not yet run against the broker by the group | Jacobo |
 | **Task 3** `query` | **Not started.** Unblocked now that the contract is in main | Angelo |
-| **Task 3** tracing window | **Not started.** Needs a Windows machine | |
+| **Task 3** tracing window | Written, needs building and a live test | Andrew |
 | Report 3 (contact tracing) | Waiting on the apps being finished and tested | |
 | Report 1 (chat) | Being written | Jane |
 | Report 2 (trading) | Being written | Jane |

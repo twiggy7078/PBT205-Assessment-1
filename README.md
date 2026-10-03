@@ -12,7 +12,9 @@ C# (.NET 10) prototypes that talk to each other through RabbitMQ.
 | `src/SendOrder.Cli`, `src/Exchange.Cli` | **Task 2** command-line apps (`sendOrder.exe`, `exchange.exe`) |
 | `src/Trading.Gui` | **Task 2** final product: live prices window (Windows only) |
 | `src/Pbt205.Tracing` | **Task 3** contracts and board (skeleton) |
-| `src/Person.Cli`, `src/Tracker.Cli`, `src/Query.Cli` | **Task 3** command-line apps (skeletons) |
+| `src/Person.Cli`, `src/Tracker.Cli` | **Task 3** command-line apps (`person.exe`, `tracker.exe`) |
+| `src/Query.Cli` | **Task 3** contact lookup (skeleton) |
+| `src/Tracing.Gui` | **Task 3** final product: environment window (Windows only) |
 
 Every project reuses `Pbt205.Messaging`. Before writing code for Tasks 2 or 3, read
 `docs/message-contracts.md` (what each app sends) and `docs/how-we-work.md` (repo rules and who does what).
@@ -155,3 +157,33 @@ Exit codes: `0` normal, `1` bad arguments or no login, `2` could not connect.
 * **Console input and incoming messages share one window**, so a message can arrive in the middle of
   what you're typing. The GUI version fixes this.
 * **Usernames aren't checked by the server.** Anyone with a RabbitMQ login can use any display name.
+
+### Task 3: contact tracing
+
+Start one tracker, then as many people as you like. A small board makes contacts happen sooner.
+
+```powershell
+# One person runs the tracker and leaves it open
+dotnet run --project src\Tracker.Cli -- 100.74.122.113:5672
+```
+
+```powershell
+# Everyone else walks around under their own name
+dotnet run --project src\Person.Cli -- 100.74.122.113:5672 Andrew --board-size 4 -m 2
+dotnet run --project src\Person.Cli -- 100.74.122.113:5672 Jacobo --board-size 4 -m 2
+```
+
+The tracker prints each move, and a CONTACT line whenever two people land on the same square.
+If two people start with the same name, the tracker renames the second to `Name-2`, and that is
+the name to use when looking them up.
+
+#### Tracing window (final product)
+
+```powershell
+dotnet run --project src\Tracing.Gui
+```
+
+Fill in the endpoint, your RabbitMQ login and the board size, then press Connect. The window draws
+everyone on the board as they move, lists who it has seen, and looks up a person's contacts. Type a
+name and press Find contacts, or double-click someone in the list. The tracker must be running for
+lookups to be answered. This project needs Windows, since it uses WinForms.
