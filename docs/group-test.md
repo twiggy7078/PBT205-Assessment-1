@@ -91,3 +91,35 @@ reports.
 * Everyone writes their own paragraph for the contributions table, in their own words.
 * Anything that did not work gets written down the same night, while we remember it. Problems we
   found and fixed are worth marks; problems we forgot are not.
+
+## Draft figure captions for the RabbitMQ screenshots
+
+Drafted from a single-machine functional test on 3 October. Jane can paste these under the images
+and renumber. If the group test produces cleaner versions with four people connected, swap the
+images and delete the caveat at the bottom.
+
+**Figure X: RabbitMQ Connections tab during a contact tracing run**
+
+> Five AMQP 0-9-1 connections to the broker: four `person` applications and one `tracker`. Each
+> application sets a descriptive connection name when it connects, so the broker's own management
+> interface identifies which process is which rather than listing anonymous sockets. The tracker
+> holds three channels, one to publish query responses and two to consume, while each person
+> application holds a single publishing channel.
+
+**Figure Y: RabbitMQ Overview during the same run**
+
+> Broker totals while four person applications were publishing position updates. The publish rate
+> and the delivery rate are equal at 8 messages per second and the ready queue depth is zero,
+> showing that messages were consumed as fast as they were produced rather than accumulating. Of
+> the fourteen exchanges, seven are RabbitMQ's default exchanges and seven are the topic exchanges
+> created by this project: `room`, `orders`, `trades`, `book`, `position`, `query` and
+> `query-response`. Only two queues exist, both belonging to the tracker, because the person
+> applications publish without subscribing.
+
+**Caveat that applies only to the single-machine versions**
+
+These two images were captured with all five applications running on one machine, so every
+connection shows the same address and the same broker user. They demonstrate the messaging
+architecture, not distributed operation. Retaken during the group test they will show four
+addresses and four usernames and can then be described as a multi-machine run. Until then the
+report should not claim the latter.
