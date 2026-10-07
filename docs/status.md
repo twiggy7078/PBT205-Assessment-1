@@ -1,6 +1,6 @@
 # Where we are
 
-Last updated: 3 October 2026. Update this file when you finish something.
+Last updated: 7 October 2026. Update this file when you finish something.
 
 ## Who is doing what
 
@@ -9,7 +9,7 @@ Last updated: 3 October 2026. Update this file when you finish something.
 | Andrew | Middleware, shared library, Tasks 1 and 2 code. Integration support for Task 3 |
 | Jane | Reports for Tasks 1 and 2 (writing packs are in the Assessment 1 folder) |
 | Jacobo | Task 3: the `person` and `tracker` applications |
-| Angelo | Task 3: the `query` application, checking the whole thing builds and runs on macOS, and organising the group test session |
+| Angelo | Task 3: the `query` application, checking the whole thing builds and runs on Windows and organising the group test session |
 
 ## Quick view
 
@@ -23,13 +23,28 @@ Last updated: 3 October 2026. Update this file when you finish something.
 | **Task 2** `sendOrder` and `exchange` | Done and tested live | Andrew |
 | **Task 2** trading window (final product) | Done | Andrew |
 | **Task 3** `person` and `tracker` | Written and merged into main. Not yet run against the broker by the group | Jacobo |
-| **Task 3** `query` | **Not started.** Unblocked now that the contract is in main | Angelo |
+| **Task 3** `query` | Implemented and pushed to main. tested acriss two coputers including newest-first results, empty histories and the 15 second timeout  | Angelo |
 | **Task 3** tracing window | Done. Tested with four people and the tracker on 3 October | Andrew |
 | Report 3 (contact tracing) | Waiting on the apps being finished and tested | |
 | Report 1 (chat) | Being written | Jane |
 | Report 2 (trading) | Being written | Jane |
 | Group test with everyone connected | Not done | Everyone |
 | Three demo videos, one per task | Not started. See `docs/demo-videos.md` | |
+
+## Task 3 Query testing - 7 October 2026
+
+Angelo implemented the query command line application
+
+Verified: 
+* Help and argument validation
+* Connection to the shared RabbitMQ broker through Tailscale
+* Empty Contact History
+* Contact lookups for both participants, displayed newest first
+* successful operation across two computers with a teammate
+* a 15 second timeout when the tracker is stoppe
+* the application exits after displaying the response or timeout
+* the solution builds successfully on Windows
+
 
 ## What needs doing, roughly in order
 
