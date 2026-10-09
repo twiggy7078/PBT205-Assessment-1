@@ -2,10 +2,7 @@ namespace Pbt205.Tracing;
 
 /// <summary>
 /// The environment: a square grid, 10 x 10 by default and configurable up to 1000 x 1000.
-///
-/// TODO (Task 3): keep each person's current position, record a contact whenever two people
-/// occupy the same square, and answer contact queries newest first.
-/// Use a dictionary keyed by position rather than a 1000 x 1000 array.
+/// Each person's position and the contact history are kept by <see cref="ContactTracker"/>.
 /// </summary>
 public sealed class Board(int size = Board.DefaultSize)
 {

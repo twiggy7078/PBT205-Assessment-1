@@ -4,8 +4,6 @@ public sealed class ContactTracker()
 {
     // Client identity resolution state
     private readonly Dictionary<Guid, string> _assignedNames = new();
-    private readonly Dictionary<string, int> _nameCounters = new(StringComparer.OrdinalIgnoreCase);
-    private readonly Dictionary<Guid, DateTimeOffset> _lastSeen = new();
 
     
     private readonly Dictionary<string, (int X, int Y)> _personPositions = new(StringComparer.OrdinalIgnoreCase);
@@ -28,8 +26,6 @@ public sealed class ContactTracker()
             _assignedNames[clientId] = resolvedName;
         }
 
-        _lastSeen[clientId] = movedAt;
-        
         var pos = (x, y);
         var contacts = new List<Contact>();
         
