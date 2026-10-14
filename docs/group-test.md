@@ -4,16 +4,15 @@ One sitting with all four of us connected, to prove the prototypes work across f
 collect the screenshots the three reports need. Everything runs against the shared RabbitMQ on the
 NAS, so nobody needs Docker for this.
 
-Date: [agree a night]
+Date: 14 October 2026
 
 ## Before we start
 
 * `git pull` and `dotnet build`. Everyone on the same code.
 * Tailscale connected, and your own RabbitMQ login saved or to hand.
 * Close anything private. Screenshots are going into reports with our names on them.
-* Angelo is on a Mac, so he runs the command-line apps while the rest of us run the windows. That
-  is worth capturing rather than hiding: it shows two different clients talking through the same
-  broker.
+* Check everyone is on Windows. Andrew and Angelo are; Jane and Jacobo to confirm. The windows
+  (`Chat.Gui`, `Trading.Gui`, `Tracing.Gui`) only run on Windows.
 
 ## Who runs what
 
@@ -22,7 +21,7 @@ Date: [agree a night]
 | Andrew |      `Chat.Gui`      | `Exchange.Cli`, then `Trading.Gui` | `Tracker.Cli`, then `Tracing.Gui` |
 | Jane   |      `Chat.Gui`      |           `SendOrder.Cli`          |           `Person.Cli`            |
 | Jacobo |      `Chat.Gui`      |           `SendOrder.Cli`          |           `Person.Cli`            |
-| Angelo | `Chat.Cli` (console) |           `SendOrder.Cli`          |     `Person.Cli`, `Query.Cli`     |
+| Angelo |      `Chat.Gui`      |           `SendOrder.Cli`          |     `Person.Cli`, `Query.Cli`     |
 
 Andrew runs the long-lived apps (exchange, tracker) and takes the RabbitMQ management screenshots.
 
@@ -42,14 +41,14 @@ Andrew runs the long-lived apps (exchange, tracker) and takes the RabbitMQ manag
 Order matters: a join notice only reaches people already connected, so whoever joins first never
 sees their own arrival announced.
 
-1. Andrew joins `general`, then Jane, then Jacobo, then Angelo on the console.
+1. Andrew joins `general`, then Jane, then Jacobo, then Angelo.
 2. A few messages each, including the agreed line.
 3. Jane leaves and rejoins in room `study`, types something, and the rest of us confirm we do not
    see it. That covers the multiple-rooms requirement.
-4. Angelo types `/quit` so a leave notice appears for everyone.
+4. Angelo and Jacobo presses Leave so a leave notice appears for everyone.
 
-**Screenshots:** everyone captures their own window or console. Andrew captures the RabbitMQ
-Connections tab (four connections, four usernames, `chatGui:` and `chat:` names) and the Overview
+**Screenshots:** everyone captures their own window. Andrew captures the RabbitMQ
+Connections tab (four connections, four usernames, all named `chatGui:`) and the Overview
 page while messages are flowing, showing one queue and one consumer per app.
 
 ## Task 2: trading
@@ -67,17 +66,26 @@ else captures their own `sendOrder` output.
 
 ## Task 3: contact tracing
 
-Andrew starts `Tracker.Cli` first, then `Tracing.Gui`.
+Andrew starts `Tracker.Cli` first, then `Tracing.Gui` with the board size set to **4 before
+pressing Connect**. If the window is left at 10 while the people use 4, everyone bunches on its edge.
 
 1. Jane, Jacobo and Angelo each run `Person.Cli` with their own name, `--board-size 4 -m 2`.
-   Everyone uses the same board size: it is a convention, nothing enforces it.
+   Everyone, including the window, uses the same board size: it is a convention, nothing enforces it.
 2. Let them wander until the tracker logs contacts between more than one pair.
 3. Angelo runs `Query.Cli` for someone and reads the answer in his console.
 4. Andrew looks the same person up in the window, so the console and the window agree.
-5. Short second run at `--board-size 10` to show the size is configurable.
+5. **Two queries at once.** Angelo and Jane each run `Query.Cli` at the same moment (on the call,
+   "go"), ideally both for the same person. Each should print only its own answer and exit.
+6. **Second run on a bigger board.** Everyone stops `Person.Cli`. Andrew closes and restarts
+   `Tracker.Cli` (otherwise the old people stay on the board as ghosts and anyone rejoining is
+   renamed, e.g. Jane-2), then restarts `Tracing.Gui` with board size **20**. Everyone runs
+   `Person.Cli` again with `--board-size 20 -m 2`. The report needs a board larger than 10 by 10,
+   so 10 does not count.
 
 **Screenshots:** Andrew captures the tracing window (several people on the board, contacts listed)
 and the tracker console showing contacts between different pairs. Angelo captures his query output.
+Angelo and Jane both capture their output from the two simultaneous queries. Andrew captures the
+window once more on the 20 by 20 board.
 
 ## At the busiest moment
 
@@ -95,8 +103,11 @@ reports.
 ## Draft figure captions for the RabbitMQ screenshots
 
 Drafted from a single-machine functional test on 3 October. Jane can paste these under the images
-and renumber. If the group test produces cleaner versions with four people connected, swap the
-images and delete the caveat at the bottom.
+and renumber. If the group test produces new versions with four people connected, swap the images
+**and rewrite the captions** to match what the new screenshots show: the counts below (five
+connections, three tracker channels, two queues, 8 messages per second) describe the 3 October run
+only. With `Tracing.Gui` and four machines connected there will be more connections and queues,
+four addresses and four usernames. Then delete the caveat at the bottom.
 
 **Figure X: RabbitMQ Connections tab during a contact tracing run**
 
